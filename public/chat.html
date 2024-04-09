@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="utf-8">
+    <title>Chat Online</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+    <main class="content">
+        <div class="container p-0">
+            <div class="cont" style="display: flex; justify-content: space-between; align-items: baseline;">
+                <h1 class="h3 mb-3">MENSAGENS</h1>
+                <a href="home.html">INÍCIO</a>
+            </div>
+            <div class="card">
+                <div class="row g-0 mx-0 px-0">
+                    <!--ListaUsers-->
+                    <div class="col-12 col-lg-5 col-xl-3 border-right" style="max-height: 80vh; overflow-y: scroll;" id="listaUser">
+<!--                         <div class="px-4 d-none d-md-block">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <input type="text" class="form-control my-3" placeholder="Pesquisar...">
+                                </div>
+                            </div>
+                        </div> -->
+                        <hr class="d-block d-lg-none mt-1 mb-0">
+                    </div>
+                    <div class="col-12 col-lg-7 col-xl-9" id="py1">
+
+                        <div class="position-relative" id="py3">
+                            <div class="chat-messages p-4" id="messages">
+
+
+
+                            </div>
+                        </div>
+                        <form class="flex-grow-0 py-3 px-4 border-top" id="form">
+                            <div class="input-group">
+                                <textarea name="" id="input" class="form-control"
+                                    placeholder="Digite sua mensagem"></textarea>
+                                <button type="submit" class="btn" style="height: fit-content; background-color: #00ffa1!important;">Enviar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center" id="exampleModalLabel">Perfil do Usuário</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="wrapper">
+                        <div class="profile-card js-profile-card">
+                            <div class="profile-card__img">
+                                <img src="assets/imgs/user.png" alt="profile card">
+                            </div>
+
+                            <div class="profile-card__cnt js-profile-cnt">
+                                <div class="profile-card__name" id="userNameModal"></div>
+                                <div class="profile-card__txt" id="userEmailModal"></div>
+                                <img src="" width="35" height="35" id="bandeira">
+
+                                <div class="profile-card-inf">
+                                    <div class="profile-card-inf__item">
+                                        <div class="profile-card-inf__title" id="userResgistro"></div>
+                                        <div class="profile-card-inf__txt">Membro Desde</div>
+                                    </div>
+
+                                    <div class="profile-card-inf__item">
+                                        <div class="profile-card-inf__title" id="sendSms"></div>
+                                        <div class="profile-card-inf__txt">Mensagens Enviadas</div>
+                                    </div>
+
+                                    <div class="profile-card-inf__item">
+                                        <div class="profile-card-inf__title" id="receiveSms"></div>
+                                        <div class="profile-card-inf__txt">Mensagens Recebidas</div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
+</body>
+
+</html>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    var idUser = localStorage.getItem("idUser");
+    console.log(idUser)
+    var socket = io({ auth: { serverOffset: 0 } });
+    var form = document.getElementById('form');
+    var input = document.getElementById('input');
+    var messages = document.getElementById('messages');
+    var global_id_receptor = undefined;
+    var global_language_receptor = undefined;
+    var global_language_user = undefined;
+    var global_nome_receptor = undefined;
+
+    if (!idUser) {
+        window.location.href = "index.html";
+    }
+    window.addEventListener('load', async function () {
+        form.style.visibility = 'hidden';
+        try {
+            const response = await fetch(`http://localhost:3000/home/${idUser}`);
+
+            if (response.ok) {
+                let data = await response.json()
+                let usuario = data.dados_perfil[0];
+                let outrosUsuarios = data.lista_contactos;
+                //console.log(outrosUsuarios)
+                for (let index = 0; index < outrosUsuarios.length; index++) {
+                    const username = outrosUsuarios[index].username;
+                    const nome = outrosUsuarios[index].name;
+                    const email = outrosUsuarios[index].language;
+                    const id = outrosUsuarios[index].pk_user_id;
+                    const dataregistro = new Date(outrosUsuarios[index].registrydate);
+                    const userdataregistro = `${dataregistro.getDay()}/${dataregistro.getMonth() + 1}/${dataregistro.getFullYear()}`
+
+                    let temp = await verMensagens(idUser, id);
+                    temp += await verMensagens(id, idUser);
+                    criarElementos(nome, id, temp)
+                }
+            } else {
+                alert('Erro: Não foi possível carregar os dados, tente novamente');
+            }
+        } catch (error) {
+            console.log('Erro 1', error);
+            alert('Erro: Não foi possível comunicar com o servidor, tente novamente');
+        }
+        try {
+            const response = await fetch(`http://localhost:3000/home/${idUser}`);
+
+            if (response.ok) {
+                let data = await response.json()
+                let usuario = data.dados_perfil[0];
+                let outrosUsuarios = data.lista_contactos;
+                global_language_user = usuario.language;
+            } else {
+                alert('Erro: Não foi possível carregar os dados, tente novamente');
+            }
+        } catch (error) {
+            console.log('Erro 1', error);
+            alert('Erro: Não foi possível comunicar com o servidor, tente novamente');
+        }
+    });
+
+    function criarElementos(nomeUsuario, idTemp, totalMsg) {
+        // Crie o elemento <a>
+        let link = document.createElement('a');
+        link.href = '#';
+        link.className = 'list-group-item list-group-item-action border-0';
+
+        // Crie o elemento <div> para a insígnia
+        let badge = document.createElement('div');
+        badge.className = 'badge bg-success float-right';
+        badge.textContent = totalMsg/2;
+
+        // Crie o elemento <div> para a seção da imagem e texto
+        let divFlex = document.createElement('div');
+        divFlex.className = 'd-flex align-items-start';
+
+        // Crie o elemento <img> para a imagem do usuário
+        let img = document.createElement('img');
+        img.src = 'assets/imgs/user.png';
+        img.className = 'rounded-circle mr-1 userPic';
+
+        // Crie o elemento <div> para o texto
+        let divText = document.createElement('div');
+        divText.className = 'flex-grow-1 ml-3';
+        divText.textContent = `${nomeUsuario}`;
+        divText.onclick = function () {
+            exibir(`${idTemp}`)
+        };
+
+        // Crie o elemento <div> para a indicação de status
+        let divStatus = document.createElement('div');
+        divStatus.className = 'small';
+
+        let spanStatus = document.createElement('span');
+        spanStatus.className = 'fas fa-circle chat-online';
+        spanStatus.textContent = 'Disponível';
+        divStatus.appendChild(spanStatus);
+        divText.appendChild(divStatus);
+
+        // Adicione os elementos criados à estrutura de árvore
+        divFlex.appendChild(img);
+        divFlex.appendChild(divText);
+
+        link.appendChild(badge);
+        link.appendChild(divFlex);
+
+        // Adicione o elemento à sua página HTML
+        document.getElementById("listaUser").appendChild(link);
+
+    }
+
+    async function exibir(arg) {
+        var elementoAntes = document.getElementById('py3');
+        form.style.visibility = 'visible';
+
+        try {
+            const response = await fetch(`http://localhost:3000/home/${arg}`);
+
+            if (response.ok) {
+                let data = await response.json()
+                let usuario = data.dados_perfil[0];
+                let outrosUsuarios = data.lista_contactos;
+                let dataString = new Date(usuario.registrydate);
+                let dia = dataString.getDate();
+                let mes = dataString.getMonth() + 1;
+                let ano = dataString.getFullYear();
+                global_id_receptor = usuario.pk_user_id;
+                console.log(`Receptor id: ${global_id_receptor}`)
+                global_language_receptor = usuario.language;
+                global_nome_receptor = usuario.name;
+
+                removerElemento();
+                removerSms();
+                adicionarElemento(elementoAntes, usuario.name, usuario.language, usuario.email, `${dia}/${mes}/${ano}`, global_id_receptor);
+
+            } else {
+                alert('Erro: Não foi possível carregar os dados, tente novamente');
+            }
+        } catch (error) {
+            console.log('Erro 1', error);
+            alert('Erro: Não foi possível comunicar com o servidor, tente novamente');
+        }
+
+        try {
+            const response = await fetch(`http://localhost:3000/home/messages/${idUser}/${global_id_receptor}`);
+
+            if (response.ok) {
+                const responseData = await response.json();
+                console.log(responseData)
+
+                if (responseData[0].msg !== "Não há mensagem nessa conversa") {
+                    for (let index = 0; index < responseData.length; index++) {
+
+                        if (responseData[index].fk_sender_id === parseInt(idUser)) {
+                            let dataString = new Date(responseData[index].sending_data);
+                            let dia = dataString.getDate();
+                            let mes = dataString.getMonth() + 1;
+                            let hora = dataString.getHours();
+                            hora = hora < 10 ? '0' + hora : hora;
+                            let min = dataString.getMinutes();
+                            min = min < 10 ? '0' + min : min;
+                            criarSmsSendRigth(responseData[index].msg, `${dia}/${mes} ${hora}:${min}`)
+                        } else {
+                            let msgTemp = responseData[index].msg;
+                            let dataString = new Date(responseData[index].sending_data);
+                            let dia = dataString.getDate();
+                            let mes = dataString.getMonth() + 1;
+                            let hora = dataString.getHours();
+                            hora = hora < 10 ? '0' + hora : hora;
+                            let min = dataString.getMinutes();
+                            min = min < 10 ? '0' + min : min;
+
+                            if (global_language_user !== responseData[index].msg_language) {
+                                msgTemp = await traduzirTexto(msgTemp, responseData[index].msg_language, global_language_user);
+                                //console.log(`Tra: ${msgTemp}`);
+                            }
+                            criarSmsReceiveLeft(global_nome_receptor, msgTemp, `${dia}/${mes} ${hora}:${min}`);
+                            messages.scrollTo({
+                                top: messages.scrollHeight,
+                                behavior: 'smooth'
+                            });
+                        }
+
+                    }
+                } else {
+                    alert("Não há mensagem nessa conversa")
+                }
+            } else {
+                alert('Erro 0');
+            }
+        } catch (error) {
+            console.error('Erro 1', error);
+            alert('Erro 1');
+        }
+    }
+
+    async function verMensagens(usuarioId, amigoId) {
+        try {
+            const response = await fetch(`http://localhost:3000/home/messages/${usuarioId}/${amigoId}`);
+
+            if (response.ok) {
+                let data = await response.json()
+
+                if ("Não há mensagem nessa conversa" === data[0].msg) {
+                    return 0;
+                } else {
+                    return data.length;
+                }
+
+            } else {
+                alert('Erro: Não foi possível carregar os dados, tente novamente');
+            }
+        } catch (error) {
+            console.error('Erro 1', error);
+            alert('Erro: Não foi possível comunicar com o servidor, tente novamente');
+        }
+    }
+
+    function removerElemento() {
+        // Encontre o elemento pai que você adicionou
+        let divPrincipal = document.getElementById('py2');
+
+        // Se o elemento pai existir
+        if (divPrincipal) {
+            // Remova todos os elementos filhos
+            while (divPrincipal.firstChild) {
+                divPrincipal.removeChild(divPrincipal.firstChild);
+                divPrincipal.remove();
+            }
+        } else {
+            console.log('Elemento pai não encontrado.');
+        }
+
+    }
+    function removerSms() {
+        // Encontre o elemento pai que você adicionou
+        let divRigth = document.getElementById("messages");
+
+        // Se o elemento pai existir
+        if (divRigth) {
+            // Remova todos os elementos filhos
+            while (divRigth.firstChild) {
+                divRigth.removeChild(divRigth.firstChild);
+            }
+        } else {
+            console.log('Elemento pai não encontrado.');
+        }
+
+    }
+
+    function adicionarElemento(elemento, nome, lingua, email, dataResgistro, id) {
+
+        // Crie o elemento <div> principal
+        let divPrincipal = document.createElement('div');
+        divPrincipal.className = 'py-2 px-4 border-bottom d-none d-lg-block';
+        divPrincipal.id = "py2";
+
+        // Crie o elemento <div> para a linha
+        let divLinha = document.createElement('div');
+        divLinha.className = 'd-flex align-items-center py-1';
+
+        // Crie o elemento <div> para a imagem do usuário
+        let divImagem = document.createElement('div');
+        divImagem.className = 'position-relative';
+        let imgUsuario = document.createElement('img');
+        imgUsuario.src = 'assets/imgs/user.png';
+        imgUsuario.className = 'rounded-circle mr-1 userPic';
+        divImagem.appendChild(imgUsuario);
+
+        // Crie o elemento <div> para o texto
+        let divTexto = document.createElement('div');
+        divTexto.className = 'flex-grow-1 pl-3';
+        let strongNome = document.createElement('strong');
+        strongNome.textContent = `${nome}`;
+        let divDisponibilidade = document.createElement('div');
+        divDisponibilidade.className = 'text-muted small';
+        let emDisponivel = document.createElement('em');
+        emDisponivel.textContent = 'Disponível';
+        divDisponibilidade.appendChild(emDisponivel);
+        divTexto.appendChild(strongNome);
+        divTexto.appendChild(divDisponibilidade);
+
+        // Crie o elemento <div> para os botões
+        let divBotoes = document.createElement('div');
+        let buttonInfo = document.createElement('button');
+        buttonInfo.className = 'btn btn-light';
+        let spanInfo = document.createElement('span');
+        spanInfo.style.fontSize = '25px';
+        spanInfo.setAttribute('data-toggle', 'modal');
+        spanInfo.setAttribute('data-target', '#exampleModal');
+        let ionIcon = document.createElement('ion-icon');
+        ionIcon.setAttribute('name', 'information-circle-outline');
+        spanInfo.appendChild(ionIcon);
+        buttonInfo.appendChild(spanInfo);
+        let imgIdioma = document.createElement('img');
+        imgIdioma.src = `assets/imgs/${lingua}.png`;
+        imgIdioma.style.width = '35px';
+        divBotoes.appendChild(buttonInfo);
+        divBotoes.appendChild(imgIdioma);
+
+        // Adicione todos os elementos à estrutura de árvore
+        divLinha.appendChild(divImagem);
+        divLinha.appendChild(divTexto);
+        divLinha.appendChild(divBotoes);
+        divPrincipal.appendChild(divLinha);
+
+        // Adicione o elemento à sua estrutura de árvore
+        document.getElementById("py1").insertBefore(divPrincipal, elemento);
+        actualizarPerfil(nome, lingua, email, dataResgistro, id)
+
+    }
+
+    async function actualizarPerfil(nome, lingua, email, dataResgistro, id) {
+
+        document.getElementById("userNameModal").textContent = nome;
+        document.getElementById("userEmailModal").textContent = email;
+        document.getElementById("userResgistro").textContent = dataResgistro;
+        document.getElementById("bandeira").src = `assets/imgs/${lingua}.png`;
+        //---------------------------------------------------------------------------
+        //---------------------------------------------------------------------------
+        try {
+            const response = await fetch(`http://localhost:3000/home/messages/send/${id}`);
+
+            if (response.ok) {
+                let data = await response.json()
+                if ("Não há mensagem nessa conversa" === data[0].msg) {
+                    document.getElementById("sendSms").textContent = "0";
+                } else {
+                    document.getElementById("sendSms").textContent = `${data.length}`;
+                }
+
+            } else {
+                alert('Erro: Não foi possível carregar os dados, tente novamente');
+            }
+        } catch (error) {
+            console.error('Erro 1', error);
+            alert('Erro: Não foi possível comunicar com o servidor, tente novamente');
+        }
+        //---------------------------------------------------------------------------
+        //---------------------------------------------------------------------------
+        try {
+            const response = await fetch(`http://localhost:3000/home/messages/receive/${id}`);
+
+            if (response.ok) {
+                let data = await response.json()
+                if ("Não há mensagem nessa conversa" === data[0].msg) {
+                    document.getElementById("receiveSms").textContent = "0";
+                } else {
+                    document.getElementById("receiveSms").textContent = `${data.length}`;
+                }
+
+            } else {
+                alert('Erro: Não foi possível carregar os dados, tente novamente');
+            }
+        } catch (error) {
+            console.error('Erro 1', error);
+            alert('Erro: Não foi possível comunicar com o servidor, tente novamente');
+        }
+
+    }
+
+    //------------------------------------CHAT-->
+
+    /***
+     * ----------------------------  Funções auxiliares
+    */
+    async function traduzirTexto(msgF, languageSenderF, languageReceiverF) {
+        const texto = msgF;
+        const idiomaOrigem = languageSenderF;
+        const idiomaDestino = languageReceiverF;
+        console.log(`: ${texto} , ${idiomaOrigem} , ${idiomaDestino}`)
+        try {
+            const response = await fetch(`https://api.mymemory.translated.net/get?q=${texto}&langpair=${idiomaOrigem}|${idiomaDestino}`);
+            const data = await response.json();
+
+            if (response.ok) {
+                const traducao = data.responseData.translatedText;
+                console.log(`Tra: ${traducao}`)
+                return traducao;
+            } else {
+                console.log(data)
+                return msgF;
+            }
+        } catch (error) {
+            console.log(error)
+            return msgF;
+        }
+    }
+
+    function criarSmsSendRigth(sms, dataSms) {
+        // Crie o elemento <div> principal
+        let divPrincipal = document.createElement('div');
+        divPrincipal.className = 'chat-message-right pb-4';
+
+        // Crie o primeiro sub-elemento
+        let divPrimeiro = document.createElement('div');
+
+        // Adicione a imagem ao primeiro sub-elemento
+        let imgUsuario = document.createElement('img');
+        imgUsuario.src = 'assets/imgs/user.png';
+        imgUsuario.className = 'rounded-circle mr-1 userPic';
+        divPrimeiro.appendChild(imgUsuario);
+
+        // Adicione a hora ao primeiro sub-elemento
+        let divHora = document.createElement('div');
+        divHora.className = 'text-muted small text-nowrap mt-2';
+        let dataAtual = new Date();
+
+        // Obtenha a hora e os minutos
+        let hora = dataAtual.getHours();
+        let minuto = dataAtual.getMinutes();
+
+        // Formate a hora e os minutos para garantir que tenham dois dígitos
+        hora = hora < 10 ? '0' + hora : hora;
+        minuto = minuto < 10 ? '0' + minuto : minuto;
+        if (dataSms == undefined || dataSms == "" || dataSms == null) {
+            divHora.textContent = `${hora}:${minuto}`;
+        }else{
+            divHora.textContent = dataSms;
+        }
+        divPrimeiro.appendChild(divHora);
+
+        // Adicione o primeiro sub-elemento ao elemento principal
+        divPrincipal.appendChild(divPrimeiro);
+
+        // Crie o segundo sub-elemento
+        let divSegundo = document.createElement('div');
+        divSegundo.className = 'flex-shrink-1 bg-light rounded py-2 px-3 mr-3';
+
+        // Adicione o nome ao segundo sub-elemento
+        let divNome = document.createElement('div');
+        divNome.className = 'font-weight-bold mb-1';
+        divNome.textContent = 'You';
+        divSegundo.appendChild(divNome);
+
+        // Adicione o texto ao segundo sub-elemento
+        let divTexto = document.createElement('div');
+        divTexto.textContent = `${sms}`;
+        divSegundo.appendChild(divTexto);
+
+        // Adicione o segundo sub-elemento ao elemento principal
+        divPrincipal.appendChild(divSegundo);
+
+        // Adicione o elemento principal à sua estrutura de árvore
+        messages.appendChild(divPrincipal);
+
+    }
+
+    function criarSmsReceiveLeft(nome, texto, dataSms) {
+        // Crie o elemento <div> principal
+        let divPrincipal = document.createElement('div');
+        divPrincipal.className = 'chat-message-left pb-4';
+
+        // Crie o primeiro sub-elemento
+        let divPrimeiro = document.createElement('div');
+
+        // Adicione a imagem ao primeiro sub-elemento
+        let imgUsuario = document.createElement('img');
+        imgUsuario.src = 'assets/imgs/user.png';
+        imgUsuario.className = 'rounded-circle mr-1 userPic';
+        divPrimeiro.appendChild(imgUsuario);
+
+        // Adicione a hora ao primeiro sub-elemento
+        let divHora = document.createElement('div');
+        divHora.className = 'text-muted small text-nowrap mt-2';
+        let dataAtual = new Date();
+
+        // Obtenha a hora e os minutos
+        let hora = dataAtual.getHours();
+        let minuto = dataAtual.getMinutes();
+
+        // Formate a hora e os minutos para garantir que tenham dois dígitos
+        hora = hora < 10 ? '0' + hora : hora;
+        minuto = minuto < 10 ? '0' + minuto : minuto;
+        if (dataSms == undefined || dataSms == "" || dataSms == null) {
+            divHora.textContent = `${hora}:${minuto}`;
+        }else{
+            divHora.textContent = dataSms;
+        }
+        divPrimeiro.appendChild(divHora);
+
+        // Adicione o primeiro sub-elemento ao elemento principal
+        divPrincipal.appendChild(divPrimeiro);
+
+        // Crie o segundo sub-elemento
+        let divSegundo = document.createElement('div');
+        divSegundo.className = 'flex-shrink-1 bg-light rounded py-2 px-3 ml-3';
+
+        // Adicione o nome ao segundo sub-elemento
+        let divNome = document.createElement('div');
+        divNome.className = 'font-weight-bold mb-1';
+        divNome.textContent = nome;
+        divSegundo.appendChild(divNome);
+
+        // Adicione o texto ao segundo sub-elemento
+        let divTexto = document.createElement('div');
+        divTexto.textContent = texto;
+        divSegundo.appendChild(divTexto);
+
+        // Adicione o segundo sub-elemento ao elemento principal
+        divPrincipal.appendChild(divSegundo);
+
+        // Adicione o elemento principal à sua estrutura de árvore
+        messages.appendChild(divPrincipal);
+    }
+
+    /***
+     * ------------------------  Eventos
+    */
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (input.value) {
+            socket.emit('chat message', input.value, idUser, global_id_receptor, global_language_user, global_language_receptor);
+            criarSmsSendRigth(input.value);
+            input.value = '';
+            messages.scrollTo({
+                top: messages.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+    });
+
+    socket.on('chat message', async function (msg, msgId, idSender, idReceiver) {
+        console.log(`Msg:${msg}, ${msgId}, ${idSender}, ${idReceiver}`);
+        if (msg.length !== 0 && idUser !== idSender) {
+            try {
+
+                const response = await fetch(`http://localhost:3000/home/messages/last/${global_id_receptor}/${idUser}`);
+                if (response.ok) {
+                    const responseData = await response.json();
+                    console.log(msg)
+                    console.log(responseData.msg);
+                    console.log(`${global_language_user} - ${responseData.msg_language}`);
+                    if (responseData.msg !== undefined) {
+                        let msgTemp = responseData.msg;
+
+                        if (global_language_user !== responseData.msg_language) {
+                            msgTemp = await traduzirTexto(msgTemp, responseData.msg_language, global_language_user);
+                        }
+                        criarSmsReceiveLeft(global_nome_receptor, msgTemp);
+                        messages.scrollTo({
+                            top: messages.scrollHeight,
+                            behavior: 'smooth'
+                        });
+                        socket.auth.serverOffset = msgId;
+                    }
+                } else {
+                    console.error('Erro ao receber a mensagem:', response.status);
+                    alert('Erro ao receber a mensagem');
+                }
+            } catch (error) {
+                console.error('Erro durante a solicitação:', error);
+                alert('Erro durante a solicitação');
+            }
+        }
+    });
+
+
+    /*
+    window.addEventListener('load', async function () {
+        
+    });
+    */
+</script>

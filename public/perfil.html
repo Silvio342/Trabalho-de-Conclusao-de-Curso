@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+  <meta charset="utf-8">
+  <title>Chat Tradutor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+  <main class="content">
+    <div class="container p-0">
+      <h1 class="h3 mb-3">MEU PERFIL</h1>
+      <div class="card">
+        <div class="row g-0 mx-0 px-0">
+          <div class="col-12 col-lg-5 col-xl-3 border-right" style="max-height: 80vh; overflow-y: scroll;">
+            <a href="home.html" class="list-group-item list-group-item-action border-0">
+              <div class="d-flex align-items-start">
+                <div class="icons"><ion-icon name="home"></ion-icon></div>
+                <div class="flex-grow-1 ml-3">
+                  Início
+                </div>
+              </div>
+            </a>
+            <a href="chat.html" class="list-group-item list-group-item-action border-0">
+              <div class="d-flex align-items-start">
+                <div class="icons"><ion-icon name="paper-plane"></ion-icon></div>
+                <div class="flex-grow-1 ml-3">
+                  Conversas
+                </div>
+              </div>
+            </a>
+            <a href="perfil.html" class="list-group-item list-group-item-action active border-0">
+              <div class="d-flex align-items-start">
+                <div class="icons"><ion-icon name="contact"></ion-icon></div>
+                <div class="flex-grow-1 ml-3">
+                  Perfil
+                </div>
+              </div>
+            </a>
+            <a href="definicoes.html" class="list-group-item list-group-item-action border-0">
+              <div class="d-flex align-items-start">
+                <div class="icons"><ion-icon name="cog"></ion-icon></div>
+                <div class="flex-grow-1 ml-3">
+                  Definições
+                </div>
+              </div>
+            </a>
+            <a href="ajuda.html" class="list-group-item list-group-item-action border-0">
+              <div class="d-flex align-items-start">
+                <div class="icons"><ion-icon name="help-circle"></ion-icon></div>
+                <div class="flex-grow-1 ml-3">
+                  Ajuda
+                </div>
+              </div>
+            </a>
+            <a href="sobre.html" class="list-group-item list-group-item-action border-0">
+              <div class="d-flex align-items-start">
+                <div class="icons"><ion-icon name="information-circle"></ion-icon></div>
+                <div class="flex-grow-1 ml-3">
+                  Sobre
+                </div>
+              </div>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action border-0">
+              <div class="d-flex align-items-start">
+                <div class="icons"><ion-icon name="power"></ion-icon></div>
+                <div class="flex-grow-1 ml-3" onclick="terminarSesao()">
+                  Terminar Sessão
+                </div>
+              </div>
+            </a>
+            <hr class="d-block d-lg-none mt-1 mb-0">
+          </div>
+          <div class="col-12 col-lg-7 col-xl-9">
+            <div class="py-2 px-4 border-bottom d-none d-lg-block">
+              <div class="d-flex align-items-center py-1">
+                <div class="position-relative">
+                  <img src="assets/imgs/user.png" class="rounded-circle mr-1 userPic" id="userPic">
+                </div>
+                <div class="flex-grow-1 pl-3">
+                  <strong id="nomeUsuario1"></strong>
+                  <div class="text-muted small">Benvindo de volta</div>
+                </div>
+                <div>
+                  <!-- <button class="btn btn-light border btn-lg px-3"> -->
+                  <button class="btn btn-light">
+                    <span style="font-size: 25px;" data-toggle="modal" data-target="#exampleModal"><ion-icon
+                        name="create"></ion-icon></span>
+                  </button>
+                  <img src="" style="width: 35px;" id="bandeira">
+                  <!-- </button> -->
+                </div>
+              </div>
+            </div>
+            <div class="position-relative">
+              <div class="chat-messages p-4">
+                <div class="wrapper">
+                  <div class="profile-card js-profile-card">
+                    <div class="profile-card__img">
+                      <img src="assets/imgs/user.png" alt="profile card" id="userPic2">
+                    </div>
+
+                    <div class="profile-card__cnt js-profile-cnt">
+                      <div class="profile-card__name" id="nomeUsuario2"></div>
+                      <div class="profile-card__txt" id="emailUsuario2"></div>
+
+                      <div class="profile-card-inf">
+                        <div class="profile-card-inf__item">
+                          <div class="profile-card-inf__title" id="dataConta"></div>
+                          <div class="profile-card-inf__txt">Membro Desde</div>
+                        </div>
+
+                        <div class="profile-card-inf__item">
+                          <div class="profile-card-inf__title" id="msgSend"></div>
+                          <div class="profile-card-inf__txt">Mensagens Enviadas</div>
+                        </div>
+
+                        <div class="profile-card-inf__item">
+                          <div class="profile-card-inf__title" id="msgReceive"></div>
+                          <div class="profile-card-inf__txt">Mensagens Recebidas</div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Editar Perfil</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="formUpdate">
+            <div class="form-group">
+              <label for="exampleFormControlInput1">Nome</label>
+              <input type="text" class="form-control" id="nome" placeholder="Nome">
+            </div>
+            <div class="form-group">
+              <label for="exampleFormControlInput1">Endereço de Email</label>
+              <input type="email" class="form-control" id="email" placeholder="name@example.com">
+            </div>
+            <div class="form-group">
+              <label for="exampleFormControlSelect1">Língua</label>
+              <select class="form-control" id="lingua">
+                <option>PT</option>
+                <option>EN</option>
+                <option>FR</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="exampleFormControlInput1">Senha</label>
+              <input type="password" class="form-control" id="password" placeholder="Deixe em branco para manter">
+            </div>
+            <button type="submit" class="btn btn-primary">Actualizar</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
+</body>
+
+</html>
+<script>
+  var idUser = localStorage.getItem("idUser");
+  if (!idUser) {
+    window.location.href = "index.html";
+  }
+  window.addEventListener('load', async function () {
+    try {
+      const response = await fetch(`http://localhost:3000/home/${idUser}`);
+
+      if (response.ok) {
+        let data = await response.json()
+        let usuario = data.dados_perfil[0];
+        let outrosUsuarios = data.lista_contactos;
+        let dataString = new Date(usuario.registrydate);
+        let dia = dataString.getDate();
+        let mes = dataString.getMonth() + 1;
+        let ano = dataString.getFullYear();
+
+        document.getElementById("nomeUsuario1").textContent = usuario.name;
+        document.getElementById("nomeUsuario2").textContent = usuario.name;
+        document.getElementById("emailUsuario2").textContent = usuario.email;
+        document.getElementById("bandeira").src = `assets/imgs/${usuario.language}.png`;
+        document.getElementById("dataConta").textContent = `${dia}/${mes}/${ano}`;
+      } else {
+        alert('Erro: Não foi possível carregar os dados, tente novamente');
+      }
+    } catch (error) {
+      console.error('Erro 1', error);
+      alert('Erro: Não foi possível comunicar com o servidor, tente novamente');
+    }
+    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------
+    try {
+      const response = await fetch(`http://localhost:3000/home/messages/send/${idUser}`);
+
+      if (response.ok) {
+        let data = await response.json()
+        console.log(data);
+        if ("Não há mensagem nessa conversa" === data[0].msg) {
+          document.getElementById("msgSend").textContent = "0";
+        } else {
+          document.getElementById("msgSend").textContent = `${data.length}`;
+        }
+
+      } else {
+        alert('Erro: Não foi possível carregar os dados, tente novamente');
+      }
+    } catch (error) {
+      console.error('Erro 1', error);
+      alert('Erro: Não foi possível comunicar com o servidor, tente novamente');
+    }
+    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------
+    try {
+      const response = await fetch(`http://localhost:3000/home/messages/receive/${idUser}`);
+
+      if (response.ok) {
+        let data = await response.json()
+        console.log(data);
+        if ("Não há mensagem nessa conversa" === data[0].msg) {
+          document.getElementById("msgReceive").textContent = "0";
+        } else {
+          document.getElementById("msgReceive").textContent = `${data.length}`;
+        }
+
+      } else {
+        alert('Erro: Não foi possível carregar os dados, tente novamente');
+      }
+    } catch (error) {
+      console.error('Erro 1', error);
+      alert('Erro: Não foi possível comunicar com o servidor, tente novamente');
+    }
+  });
+
+  document.getElementById("formUpdate").addEventListener("submit", function (event) {
+    event.preventDefault();
+    var nome = document.getElementById("nome").value;
+    var email = document.getElementById("email").value;
+    var lingua = document.getElementById("lingua").value;
+    var password = document.getElementById("password").value;
+
+    email = email.toLowerCase();
+
+    // Objeto com os dados a serem enviados na requisição
+    var data = {
+      name: nome,
+      email: email,
+      language: lingua,
+      password: password
+    };
+
+    // Requisição POST para o servidor (substitua a URL pela URL real do seu backend)
+    fetch(`http://localhost:3000/user/${idUser}/update`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Erro na requisição');
+        }
+        return response.json();
+      })
+      .then(data => {
+        document.getElementById("formUpdate").reset();
+        alert(data[0].msg)
+        window.location.reload()
+      })
+      .catch(error => {
+        console.error('Erro:', error);
+        alert("Erro...")
+      });
+  });
+
+  function terminarSesao() {
+      if (confirm("Queres terminar a sessão?")) {
+        localStorage.removeItem("idUser");
+        window.location.href = "index.html";
+      }
+    }
+</script>

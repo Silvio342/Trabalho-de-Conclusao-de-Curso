@@ -1,0 +1,2 @@
+Usar o evento do Sockete para as ultimas sms na bd sempre que alguem enviar uma nova sms.
+- Contruir uma rota para traze apenas a ultima sms trocadas em idX e o idY

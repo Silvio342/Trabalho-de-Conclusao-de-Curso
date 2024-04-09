@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="utf-8">
+    <title>Chat Tradutor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+    <main class="content">
+        <div class="container p-0">
+            <h1 class="h3 mb-3">SOBRE</h1>
+            <div class="card">
+                <div class="row g-0 mx-0 px-0">
+                    <div class="col-12 col-lg-5 col-xl-3 border-right" style="max-height: 80vh; overflow-y: scroll;">
+                        <a href="home.html" class="list-group-item list-group-item-action border-0">
+                            <div class="d-flex align-items-start">
+                                <div class="icons"><ion-icon name="home"></ion-icon></div>
+                                <div class="flex-grow-1 ml-3">
+                                    Início
+                                </div>
+                            </div>
+                        </a>
+                        <a href="chat.html" class="list-group-item list-group-item-action border-0">
+                            <div class="d-flex align-items-start">
+                                <div class="icons"><ion-icon name="paper-plane"></ion-icon></div>
+                                <div class="flex-grow-1 ml-3">
+                                    Conversas
+                                </div>
+                            </div>
+                        </a>
+                        <a href="perfil.html" class="list-group-item list-group-item-action  border-0">
+                            <div class="d-flex align-items-start">
+                                <div class="icons"><ion-icon name="contact"></ion-icon></div>
+                                <div class="flex-grow-1 ml-3">
+                                    Perfil
+                                </div>
+                            </div>
+                        </a>
+                        <a href="definicoes.html" class="list-group-item list-group-item-action  border-0">
+                            <div class="d-flex align-items-start">
+                                <div class="icons"><ion-icon name="cog"></ion-icon></div>
+                                <div class="flex-grow-1 ml-3">
+                                    Definições
+                                </div>
+                            </div>
+                        </a>
+                        <a href="ajuda.html" class="list-group-item list-group-item-action border-0">
+                            <div class="d-flex align-items-start">
+                                <div class="icons"><ion-icon name="help-circle"></ion-icon></div>
+                                <div class="flex-grow-1 ml-3">
+                                    Ajuda
+                                </div>
+                            </div>
+                        </a>
+                        <a href="sobre.html" class="list-group-item list-group-item-action active border-0">
+                            <div class="d-flex align-items-start">
+                                <div class="icons"><ion-icon name="information-circle"></ion-icon></div>
+                                <div class="flex-grow-1 ml-3">
+                                    Sobre
+                                </div>
+                            </div>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action border-0">
+                            <div class="d-flex align-items-start">
+                                <div class="icons"><ion-icon name="power"></ion-icon></div>
+                                <div class="flex-grow-1 ml-3" onclick="terminarSesao()">
+                                    Terminar Sessão
+                                </div>
+                            </div>
+                        </a>
+                        <hr class="d-block d-lg-none mt-1 mb-0">
+                    </div>
+                    <div class="col-12 col-lg-7 col-xl-9">
+                        <div class="py-2 px-4 border-bottom d-none d-lg-block">
+                            <div class="d-flex align-items-center py-1">
+                                <div class="position-relative">
+                                    <img src="assets/imgs/user.png" class="rounded-circle mr-1 userPic" id="userPic">
+                                </div>
+                                <div class="flex-grow-1 pl-3">
+                                    <strong id="nomeUsuario"></strong>
+                                    <div class="text-muted small">Benvindo de volta</div>
+                                </div>
+                                <div>
+                                    <!-- <button class="btn btn-light border btn-lg px-3"> -->
+                                    <img src="" style="width: 35px;" id="bandeira">
+                                    <!-- </button> -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="position-relative">
+                            <div class="chat-messages p-4">
+                                <div class="three">
+                                    <h1 class="heading">O que é o CHAT TRADUTOR</h1>
+                                </div>
+                                <p>Lorem ipsum dolor sit amet consectetur adipisicing, elit. Quaerat facilis quibusdam
+                                    aliquam nulla accusamus tempora dolorem architecto voluptatum. Delectus omnis
+                                    dolores dignissimos rerum voluptatum laudantium harum ab impedit, blanditiis velit.
+                                    Lorem ipsum, dolor sit amet, consectetur adipisicing elit. Nostrum doloribus commodi
+                                    temporibus aspernatur ad velit dolor accusamus vitae vero repellendus ullam minus
+                                    recusandae veniam a eveniet sed, debitis facilis possimus.</p>
+                                <p>Lorem ipsum dolor sit amet consectetur adipisicing, elit. Quaerat facilis quibusdam
+                                    aliquam nulla accusamus tempora dolorem architecto voluptatum. Delectus omnis
+                                    dolores dignissimos rerum voluptatum laudantium harum ab impedit, blanditiis velit.
+                                    Lorem ipsum, dolor sit amet, consectetur adipisicing elit. Nostrum doloribus commodi
+                                    temporibus aspernatur ad velit dolor accusamus vitae vero repellendus ullam minus
+                                    recusandae veniam a eveniet sed, debitis facilis possimus.</p>
+                                <div class="three">
+                                    <h1 class="heading">Qual seu verdadeiro propósito</h1>
+                                </div>
+                                <p>Lorem ipsum dolor sit amet consectetur adipisicing, elit. Quaerat facilis quibusdam
+                                    aliquam nulla accusamus tempora dolorem architecto voluptatum. Delectus omnis
+                                    dolores dignissimos rerum voluptatum laudantium harum ab impedit, blanditiis velit.
+                                    Lorem ipsum, dolor sit amet, consectetur adipisicing elit. Nostrum doloribus commodi
+                                    temporibus aspernatur ad velit dolor accusamus vitae vero repellendus ullam minus
+                                    recusandae veniam a eveniet sed, debitis facilis possimus.</p>
+
+                                <p>Lorem ipsum dolor sit amet consectetur adipisicing, elit. Quaerat facilis quibusdam
+                                    aliquam nulla accusamus tempora dolorem architecto voluptatum. Delectus omnis
+                                    dolores dignissimos rerum voluptatum laudantium harum ab impedit, blanditiis velit.
+                                    Lorem ipsum, dolor sit amet, consectetur adipisicing elit. Nostrum doloribus commodi
+                                    temporibus aspernatur ad velit dolor accusamus vitae vero repellendus ullam minus
+                                    recusandae veniam a eveniet sed, debitis facilis possimus.</p>
+                                <p>Lorem ipsum dolor sit amet consectetur adipisicing, elit. Quaerat facilis quibusdam
+                                    aliquam nulla accusamus tempora dolorem architecto voluptatum. Delectus omnis
+                                    dolores dignissimos rerum voluptatum laudantium harum ab impedit, blanditiis velit.
+                                    Lorem ipsum, dolor sit amet, consectetur adipisicing elit. Nostrum doloribus commodi
+                                    temporibus aspernatur ad velit dolor accusamus vitae vero repellendus ullam minus
+                                    recusandae veniam a eveniet sed, debitis facilis possimus.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
+</body>
+
+</html>
+<script>
+    var idUser = localStorage.getItem("idUser");
+    if (!idUser) {
+        window.location.href = "index.html";
+    }
+    window.addEventListener('load', async function () {
+
+        try {
+            const response = await fetch(`http://localhost:3000/home/${idUser}`);
+
+            if (response.ok) {
+                let data = await response.json()
+                let usuario = data.dados_perfil[0];
+                let outrosUsuarios = data.lista_contactos;
+
+                document.getElementById("nomeUsuario").textContent = usuario.name;
+                document.getElementById("bandeira").src = `assets/imgs/${usuario.language}.png`;
+            } else {
+                alert('Erro: Não foi possível carregar os dados, tente novamente');
+            }
+        } catch (error) {
+            console.error('Erro 1', error);
+            alert('Erro: Não foi possível comunicar com o servidor, tente novamente');
+        }
+    });
+    function terminarSesao() {
+      if (confirm("Queres terminar a sessão?")) {
+        localStorage.removeItem("idUser");
+        window.location.href = "index.html";
+      }
+    }
+</script>

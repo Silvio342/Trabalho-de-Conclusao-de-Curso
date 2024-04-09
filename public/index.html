@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Login/Cadastro</title>
+	<link rel="stylesheet" href="assets/css/login.css">
+</head>
+
+<body>
+	<div class="container" id="container">
+		<div class="conterForm conterCadastro">
+			<form action="#" id="cadastroForm">
+				<h1>Criar Conta</h1>
+				<input type="text" id="nome" placeholder="Nome" required />
+				<input type="text" id="username" placeholder="Username" required />
+				<input type="email" id="email" placeholder="Email" required />
+				<select id="lingua" required>
+					<option value="" disabled selected>Selecione a sua Língua</option>
+					<option value="PT">PT</option>
+					<option value="EN">EN</option>
+					<option value="FR">FR</option>
+				</select>
+				<input type="password" id="password" placeholder="Password" required />
+				<input type="password" id="confirmPassword" placeholder="Repita a Password" required />
+				<button type="submit">Cadastrar</button>
+				<span id="errorCadastro"></span>
+				<span id="sucessCadastro"></span>
+			</form>
+		</div>
+		<div class="conterForm conterLogin">
+			<form action="#" id="loginForm">
+				<h1>LogIn</h1>
+				<input type="email" id="emailLogin" placeholder="Email" required/>
+				<input type="password" id="passwordLogin" placeholder="Password" required/>
+				<!-- <a href="#">Esqueceu sua senha?</a> -->
+				<button>LogIn</button>
+				<span id="errorLogin"></span>
+			</form>
+		</div>
+		<div class="conterTroca">
+			<div class="troca">
+				<div class="painelTroca trocaEsq">
+					<h1>Benvindo de Volta!</h1>
+					<p>Faça login na sua conta</p>
+					<button class="btntroca" id="login">LogIn</button>
+				</div>
+				<div class="painelTroca trocaDir">
+					<h1>Olá!</h1>
+					<p>Crie uma conta e troque mensagens com amigos de forma instantânea</p>
+					<button class="btntroca" id="signUp">Criar Conta</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		const signUpButton = document.getElementById('signUp');
+		const loginButton = document.getElementById('login');
+		const container = document.getElementById('container');
+
+		signUpButton.addEventListener('click', () => {
+			container.classList.add("trocaDirAtivo");
+		});
+
+		loginButton.addEventListener('click', () => {
+			container.classList.remove("trocaDirAtivo");
+		});
+	</script>
+	<!--------------------LOGIN JS--------------------->
+	<script>
+		document.getElementById("loginForm").addEventListener("submit", function (event) {
+			event.preventDefault(); // Previne o comportamento padrão do formulário
+
+			var email = document.getElementById("emailLogin").value;
+			var password = document.getElementById("passwordLogin").value;
+
+			email = email.toLowerCase();
+
+			// Objeto com os dados a serem enviados na requisição
+			var data = {
+				email: email,
+				password: password
+			};
+
+			// Requisição POST para o servidor (substitua a URL pela URL real do seu backend)
+			console.log(data)
+			fetch("http://localhost:3000/login", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify(data)
+			})
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('Erro na requisição');
+					}
+					return response.json();
+				})
+				.then(data => {
+					// Se a requisição foi bem-sucedida, redireciona para a página inicial
+					console.log(data.user_id.toString())
+					localStorage.setItem("idUser", data.user_id.toString());
+					window.location.href = `home.html`;
+				})
+				.catch(error => {
+					//console.error('Erro:', error);
+					document.getElementById("errorLogin").textContent = "Email ou pass incorreto"
+				});
+		});
+	</script>
+	<!--------------------CADASTRO JS--------------------->
+	<script>
+		document.getElementById("cadastroForm").addEventListener("submit", function (event) {
+			event.preventDefault(); // Previne o comportamento padrão do formulário
+
+			var nome = document.getElementById("nome").value;
+			var username = document.getElementById("username").value;
+			var email = document.getElementById("email").value;
+			var lingua = document.getElementById("lingua").value;
+			var password = document.getElementById("password").value;
+			var confirmPassword = document.getElementById("confirmPassword").value;
+
+			email = email.toLowerCase();
+			lingua = lingua.toLowerCase();
+
+			// Verifica se os campos obrigatórios estão preenchidos
+			if (!nome || !username || !email || !lingua || !password || !confirmPassword) {
+				document.getElementById("errorCadastro").textContent = "Por favor, preencha todos os campos obrigatórios.";
+				return;
+			}
+			// Verifica se as senhas são iguais
+			if (password !== confirmPassword) {
+				document.getElementById("errorCadastro").textContent = "As senhas não coincidem";
+				return;
+			}
+
+			// Objeto com os dados a serem enviados na requisição
+			var data = {
+				name: nome,
+				username: username,
+				email: email,
+				language: lingua,
+				password: password
+			};
+
+			// Requisição POST para o servidor (substitua a URL pela URL real do seu backend)
+			fetch("http://localhost:3000/cadastro", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify(data)
+			})
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('Erro na requisição');
+					}
+					return response.json();
+				})
+				.then(data => {
+					document.getElementById("cadastroForm").reset();
+					document.getElementById("sucessCadastro").textContent = `${data.message}`;
+					setInterval(() => {
+						window.location.reload();
+					}, 3000);
+				})
+				.catch(error => {
+					console.error('Erro:', error);
+					document.getElementById("errorCadastro").textContent = "Erro ao fazer o cadastro, tente novamente!";
+					setInterval(() => {
+						window.location.reload();
+					}, 3000);
+				});
+		});
+	</script>
+
+</body>
+
+</html>
