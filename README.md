@@ -5,5 +5,5 @@
 ### git clone https://github.com/Silvio342/final-project.gitt
 ### cd Chat-Nodejs-Mysql
 ### npm install
-### npm run dev
+### npm run start
 ### entrar em http://localhost:3000
